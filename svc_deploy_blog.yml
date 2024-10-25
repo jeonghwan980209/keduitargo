@@ -1,0 +1,37 @@
+---
+# svc-shop > cluster-ip(default)
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-blog
+spec:
+  selector:
+    app: blog
+  ports:
+  - port: 80
+    targetPort: 80
+---
+# deploy-shop
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blog
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: blog # 이 부분과 아래의 labels가 일치해야 합니다
+  template:
+    metadata:
+      labels:
+        app: blog # 서비스 셀렉터와 동일하게 수정
+    spec:
+      containers:
+      - name: blog
+        image: jeonghwan98/portal:blog
+        resources:
+          limits:
+            memory: "64Mi"
+            cpu: "250m"
+        ports:
+        - containerPort: 80 # ingress rule을 만들때 www.test.com을 접속하면 svc-shop의 80번으로 보내겠다고 설정해둬서

@@ -1,0 +1,37 @@
+---
+# svc-etc > cluster-ip(default)
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-etc
+spec:
+  selector:
+    app: etc
+  ports:
+  - port: 80
+    targetPort: 80
+---
+# deploy-etc
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: etc
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: etc
+  template:
+    metadata:
+      labels:
+        app: etc
+    spec:
+      containers:
+      - name: etc
+        image: brian24/portal:etcss
+        resources:
+          limits:
+            memory: "64Mi"
+            cpu: "250m"
+        ports:
+        - containerPort: 80
